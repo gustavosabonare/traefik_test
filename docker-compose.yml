@@ -1,0 +1,27 @@
+version: "3.3"
+
+services:
+  app:
+    container_name: 'traefik_app'
+    build: .
+    volumes: 
+      - ".:/traefik_app"
+    command: "npm start"
+    ports:
+      - "3000:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:localhost"
+  reserve-proxy: 
+    container_name: 'traefik_reserver_proxy'
+    image: traefik
+    command: --api --docker.exposedbydefault=false
+    volumes: 
+      - $PWD/traefik.toml:/etc/traefik/traefik.toml
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports: 
+      - "80:80"
+      - "8080:8080"
+     
+
+
